@@ -3,6 +3,9 @@
 
 part of table_calendar;
 
+////Callback Right Button function void.
+typedef HeaderButtonCallBack = void Function();
+
 /// Callback exposing currently selected day.
 typedef void OnDaySelected(DateTime day, List events, List holidays);
 
@@ -86,6 +89,12 @@ class TableCalendar extends StatefulWidget {
   /// Called whenever any unavailable day gets long pressed.
   /// Replaces `onDaySelected` for those days.
   final VoidCallback onUnavailableDayLongPressed;
+
+  ////Called whenever Header Left Button Tapped
+  final HeaderButtonCallBack onLeftButtonTapped;
+
+  ////Called whenever Header Right Button Tapped
+  final HeaderButtonCallBack onRightButtonTapped;
 
   /// Called whenever header gets tapped.
   final HeaderGestureCallback onHeaderTapped;
@@ -210,6 +219,8 @@ class TableCalendar extends StatefulWidget {
     this.daysOfWeekStyle = const DaysOfWeekStyle(),
     this.headerStyle = const HeaderStyle(),
     this.builders = const CalendarBuilders(),
+    this.onRightButtonTapped,
+    this.onLeftButtonTapped,
   })  : assert(calendarController != null),
         assert(availableCalendarFormats.keys.contains(initialCalendarFormat)),
         assert(availableCalendarFormats.length <= CalendarFormat.values.length),
@@ -277,12 +288,18 @@ class _TableCalendarState extends State<TableCalendar>
     setState(() {
       widget.calendarController._selectPrevious();
     });
+    if (widget.onLeftButtonTapped != null) {
+      widget.onLeftButtonTapped();
+    }
   }
 
   void _selectNext() {
     setState(() {
       widget.calendarController._selectNext();
     });
+    if (widget.onRightButtonTapped != null) {
+      widget.onRightButtonTapped();
+    }
   }
 
   void _selectDay(DateTime day) {
